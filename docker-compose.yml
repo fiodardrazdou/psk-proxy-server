@@ -6,26 +6,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: psk-blank-backend:local
-    container_name: psk-blank-backend
+    image: psk-proxy-server:local
+    container_name: psk-proxy-server
     env_file: .env.docker
     ports:
       - "8102:8000"
     restart: always
     command: uvicorn main:app --host 0.0.0.0 --forwarded-allow-ips='*'
-
-  database_psql:
-    image: postgres:14-alpine
-    container_name: psk-metric-psql-1
-    restart: always
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data_1:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=development
-      - POSTGRES_DB=metric_rec
-
-volumes:
-  postgres_data_1:

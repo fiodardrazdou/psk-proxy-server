@@ -27,7 +27,6 @@ class PostProxyDTO(BaseModel):
     password: str
     proxy_type: str
     country: str
-    created_on: datetime.datetime
     service_name: str
     job_names: list[str]
     active: bool
@@ -39,3 +38,11 @@ class PutProxyDTO(BaseModel):
     password: str
     job_names: list[str]
     active: bool
+
+
+class ProxyGenerated(BaseModel):
+    proxy_id: int
+    ip: str
+    port: int
+    username: str
+    password: str

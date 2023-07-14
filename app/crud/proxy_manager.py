@@ -1,6 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from models.proxy import Proxy
+from models.proxy_using_history import ProxyUsingHistory
+from dtos.proxy import ProxyGenerated
 import random
 import logging
 
@@ -26,6 +28,7 @@ class ProxyManager:
         proxies = await self.db.execute(
             query
         )
+        proxies = proxies.scalars().all()
         return proxies
 
     async def get_by_id(self, proxy_id: int):
@@ -107,7 +110,7 @@ class ProxyManager:
         await self.db.refresh(proxy)
         return proxy
 
-    async def generate_proxy(self, job_name: str, count: int) -> list[str]:
+    async def generate_proxy(self, job_name: str, count: int) -> list[ProxyGenerated]:
         """
         Generate a proxy
         :param job_name:
@@ -115,11 +118,46 @@ class ProxyManager:
         :return:
         """
         proxies = await self.get_all_actives()
-        proxies = [proxy.ip for proxy in proxies]
-        proxies = list(set(proxies))
+        if len(proxies) < count:
+            self.logger.info(f"Proxy is not enough for {job_name}")
         proxies = random.sample(proxies, count)
-        self.history_of_generation.append({
-            'job_name': job_name,
-            'proxies': proxies
-        })
-        return proxies
+        generated_proxies = []
+        for proxy in proxies:
+            proxy_info = ProxyGenerated(
+                proxy_id=proxy.id,
+                ip=proxy.ip,
+                port=proxy.port,
+                username=proxy.username,
+                password=proxy.password
+            )
+            generated_proxies.append(proxy_info)
+            self.history_of_generation.append(proxy_info)
+        return generated_proxies
+
+    async def save_history(self, job_name: str, proxy_infos: list[ProxyGenerated]):
+        """
+        Save a history of using proxy
+        :param job_name:
+        :param proxy_infos:
+        :return:
+        """
+        for proxy_info in proxy_infos:
+            history = ProxyUsingHistory(
+                proxy_id=proxy_info.proxy_id,
+                job_name=job_name
+            )
+            self.db.add(history)
+        await self.db.commit()
+
+    async def delete_proxy(self, proxy_id: int):
+        """
+        Delete a proxy
+        :param proxy_id:
+        :return:
+        """
+        proxy = await self.get_by_id(proxy_id)
+        if proxy is None:
+            return None
+        await self.db.delete(proxy)
+        await self.db.commit()
+        return proxy

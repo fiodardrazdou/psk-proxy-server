@@ -32,6 +32,15 @@ def upgrade():
         sa.Column('active', sa.Boolean, nullable=False),
     )
 
+    op.create_table(
+        'proxy_using_history',
+        sa.Column('id', sa.Integer, primary_key=True, index=True),
+        sa.Column('proxy_id', sa.Integer, sa.ForeignKey('proxy.id'), nullable=False),
+        sa.Column('created_on', sa.DateTime(timezone=True), server_default=sa.func.current_timestamp(), nullable=False),
+        sa.Column('job_name', sa.String(255), nullable=False),
+    )
+
 
 def downgrade():
     op.drop_table('proxy')
+    op.drop_table('proxy_using_history')

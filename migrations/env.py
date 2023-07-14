@@ -63,6 +63,7 @@ def run_migrations_online():
 
     """
     url = os.getenv('DATABASE_URL')
+    url = url.replace("+asyncpg", "")
     connectable = engine_from_config(
         {
             **config.get_section(config.config_ini_section),
