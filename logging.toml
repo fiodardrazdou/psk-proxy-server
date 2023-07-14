@@ -1,0 +1,14 @@
+# https://docs.python.org/3/library/logging.config.html#logging-config-dictschema
+version = 1
+
+[handlers.application]
+class = "app.logging.JSONFileHandler"
+filename = "logs/application.jsonl"
+
+[handlers.server_access]
+class = "app.logging.JSONFileHandler"
+filename = "logs/server_access.jsonl"
+
+[loggers]
+"app" = { handlers = ["application"] }
+"app.logging.server_access" = { handlers = ["server_access"], level = "INFO", propagate = false }
