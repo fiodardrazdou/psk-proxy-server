@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, DateTime, sql, String, JSON, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
 
 from . import Base
 
@@ -15,5 +16,5 @@ class Proxy(Base):
     country = Column(String(255), nullable=False)
     created_on = Column(DateTime(timezone=True), server_default=sql.func.current_timestamp(), nullable=False)
     service_name = Column(String(255), nullable=False)
-    job_names = Column(JSON, nullable=False)
+    job_names = Column(JSONB, nullable=False)
     active = Column(Boolean, nullable=False)

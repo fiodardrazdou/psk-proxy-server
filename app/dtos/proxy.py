@@ -38,6 +38,7 @@ class PutProxyDTO(BaseModel):
     password: str
     job_names: list[str]
     active: bool
+    proxy_type: str
 
 
 class ProxyGenerated(BaseModel):
