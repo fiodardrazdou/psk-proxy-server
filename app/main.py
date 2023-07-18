@@ -13,8 +13,6 @@ from exception_handlers import (
     base_exception_handler
 )
 
-# load_config(settings.logging_config)
-
 app = FastAPI()
 origins = [
     "http://localhost",

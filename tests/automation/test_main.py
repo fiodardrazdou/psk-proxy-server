@@ -1,15 +1,13 @@
 from tests.automation.automation_client import AutomationClient
 import unittest
 import time
-
-
-server_url = "http://localhost:8000"
+from tests.automation.config import settings
 
 
 class TestMain(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.client = AutomationClient(server_url)
+        self.client = AutomationClient(settings.server_to_test_url)
 
     def fake_proxies(self, count: int, job_name: str, proxy_type: str):
         proxies = []
