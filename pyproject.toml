@@ -2,7 +2,7 @@
 name = "psk-proxy-server"
 version = "0.1.0"
 description = ""
-authors = ["Fiodar Drazdou <dfgckpsk@protonmail.com>"]
+authors = ["Fiodar Drazdou <dfgckpsk@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
