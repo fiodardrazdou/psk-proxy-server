@@ -45,7 +45,7 @@ class TestMain(unittest.TestCase):
                 self.assertEqual(response.json()["data"], output)
 
         with self.subTest("Get proxies all"):
-            response = self.client.get_proxies(job_name=job_name)
+            response = self.client.get_proxies(job_name=job_name, proxy_type="HTTP")
             self.assertEqual(len(response.json()["data"]), 5)
 
         with self.subTest("Edit proxies"):

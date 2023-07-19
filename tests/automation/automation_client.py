@@ -22,11 +22,11 @@ class AutomationClient:
         return self.session.delete(f"{self.url}/proxy/{proxy_id}")
 
     def get_proxies(
-            self, page_offset: int = None, page_limit: int = None, job_name: str = None
+            self, page_offset: int = None, page_limit: int = None, job_name: str = None, proxy_type: str = None
     ):
         return self.session.get(
             f"{self.url}/proxies",
-            params={"page_offset": page_offset, "page_limit": page_limit, "job_name": job_name}
+            params={"page_offset": page_offset, "page_limit": page_limit, "job_name": job_name, "proxy_type": proxy_type}
         )
 
     def get_generate(self, count: int, job_name: str = None, proxy_type: str = None):

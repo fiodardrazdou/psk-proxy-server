@@ -10,6 +10,7 @@ from datetime import datetime
 
 last_return_dt = []
 all_proxies = []
+was_inited = False
 
 
 class ProxyManager:
@@ -145,8 +146,12 @@ class ProxyManager:
         :param proxy_type:
         :return:
         """
+        global was_inited
         global all_proxies
         global last_return_dt
+        if not was_inited:
+            await self.update_all_proxies()
+            was_inited = True
         proxies = list(filter(lambda x: job_name in x.job_names and x.proxy_type == proxy_type, all_proxies))
         proxies_ids = list(map(lambda x: x.id, proxies))
         proxies_were = list(filter(lambda x: x["job_name"] == job_name and
@@ -161,7 +166,7 @@ class ProxyManager:
             proxy_ids_to_out.extend(proxies)
         if len(proxy_ids_to_out) < count:
             proxies_were_to_generate = count - len(proxy_ids_to_out)
-            proxies = list(map(lambda x: x["proxy_id"], sorted(proxies_were, key=lambda x: x["dt"], reverse=True)[:proxies_were_to_generate]))
+            proxies = list(map(lambda x: x["proxy_id"], sorted(proxies_were, key=lambda x: x["dt"], reverse=False)[:proxies_were_to_generate]))
             proxy_ids_to_out.extend(proxies)
 
         proxies_to_out = list(filter(lambda x: x.id in proxy_ids_to_out, all_proxies))
@@ -176,6 +181,7 @@ class ProxyManager:
                 password=proxy.password
             )
             generated_proxies.append(proxy_info)
+            last_return_dt = list(filter(lambda x: x["proxy_id"] != proxy.id and x["job_name"] == job_name, last_return_dt))
             last_return_dt.append({
                 "dt": datetime.now(), "job_name": job_name, "proxy_id": proxy.id, "proxy_type": proxy_type
             })
