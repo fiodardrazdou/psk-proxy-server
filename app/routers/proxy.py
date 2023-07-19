@@ -18,10 +18,10 @@ logger.setLevel(logging.INFO)
 
 @router.get("/proxies", response_model=SuccessResponse[List[ProxyDTO]])
 async def get_all_proxies(
-        job_name: str = None,
+        job_name: str,
+        proxy_type: str,
         page_offset: int = Query(0, ge=0),
         page_limit: int = Query(100, ge=1),
-        proxy_type: str = None,
         db: AsyncSession = Depends(get_db)
 ):
     proxy_values = await ProxyManager(db, logger).get_all_actives(
