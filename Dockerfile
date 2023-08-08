@@ -38,3 +38,5 @@ COPY --from=build-im /usr/local/bin/ /usr/local/bin/
 
 WORKDIR /app
 COPY ./app .
+
+CMD uvicorn main:app --host 0.0.0.0 --forwarded-allow-ips='*'
