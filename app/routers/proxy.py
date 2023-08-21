@@ -62,7 +62,8 @@ async def update_metric(proxy_id: int, proxy: PutProxyDTO, db: AsyncSession = De
         username=proxy.username,
         password=proxy.password,
         job_names=proxy.job_names,
-        active=proxy.active
+        active=proxy.active,
+        proxy_type=proxy.proxy_type,
     )
     await proxy_manager.update_all_proxies()
 
