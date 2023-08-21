@@ -120,7 +120,7 @@ class ProxyManager:
         :return:
         """
         proxy = await self.get_by_id(proxy_id)
-        if proxy is None or (job_names is None and active is None) or proxy.active is False:
+        if proxy is None or (job_names is None and active is None) or (proxy.active is False and active is False):
             return None
         if job_names is not None:
             proxy.job_names = job_names
