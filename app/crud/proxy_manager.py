@@ -169,7 +169,11 @@ class ProxyManager:
             proxies = list(map(lambda x: x["proxy_id"], sorted(proxies_were, key=lambda x: x["dt"], reverse=False)[:proxies_were_to_generate]))
             proxy_ids_to_out.extend(proxies)
 
-        proxies_to_out = list(filter(lambda x: x.id in proxy_ids_to_out, all_proxies))
+        proxies_to_out = []
+        for proxy_id in proxy_ids_to_out:
+            proxy = list(filter(lambda x: x.id == proxy_id, all_proxies))
+            if len(proxy) > 0:
+                proxies_to_out.append(proxy[0])
 
         generated_proxies = []
         for proxy in proxies_to_out:

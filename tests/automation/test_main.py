@@ -132,6 +132,37 @@ class TestMain(unittest.TestCase):
             old_proxies = [proxy for proxy in response.json()["data"] if proxy["proxy_id"] in proxy_ids]
             self.assertEqual(len(old_proxies), 2)
 
+    def test_generation_3(self):
+
+        job_name = f"job_{time.time()}"
+        proxies = self.fake_proxies(3, job_name, proxy_type="HTTP")
+
+        outputs = []
+        with self.subTest("Create proxies"):
+            for proxy in proxies:
+                response = self.client.post_proxy(proxy)
+                outputs.append(response.json()["data"])
+
+            self.assertEqual(len(outputs), 3)
+
+        with self.subTest("Generate proxies 1"):
+            response = self.client.get_generate(3, job_name, proxy_type="HTTP")
+            self.assertEqual(len(response.json()["data"]), 3)
+            proxy_ids = [proxy["proxy_id"] for proxy in response.json()["data"]]
+
+
+        with self.subTest("Check first proxy in first generation is not the same as in seconds generation"):
+            response = self.client.get_generate(2, job_name, proxy_type="HTTP")
+            self.assertEqual(len(response.json()["data"]), 2)
+            previous_proxies = [proxy["proxy_id"] for proxy in response.json()["data"]]
+
+            response = self.client.get_generate(2, job_name, proxy_type="HTTP")
+            self.assertEqual(len(response.json()["data"]), 2)
+            current_proxies = [proxy["proxy_id"] for proxy in response.json()["data"]]
+
+            print(previous_proxies, current_proxies)
+            self.assertNotEqual(previous_proxies, current_proxies)
+
     def test_generation_proxy_types(self):
 
         job_name = f"job_{time.time()}"
